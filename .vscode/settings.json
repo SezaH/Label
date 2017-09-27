@@ -1,0 +1,20 @@
+{
+  "editor.wrappingIndent": "indent",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "files.autoSave": "onFocusChange",
+  "html.format.wrapAttributes": "force-aligned",
+  "editor.renderWhitespace": "all",
+  "editor.wordWrapColumn": 80,
+  "search.exclude": {
+    "node_modules/": true,
+    "dist/": true,
+  },
+  "files.exclude": {
+    ".git/": true,
+    "dist/": true,
+    "node_modules/": true
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "tslint.autoFixOnSave": true
+}

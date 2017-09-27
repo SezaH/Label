@@ -1,0 +1,17 @@
+sudo: required
+dist: trusty
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - nvm install 8.9.3
+  - npm install
+
+script:
+  - npm run lint
+  - npm run build
+
+notifications:
+  email: false
