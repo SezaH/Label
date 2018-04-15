@@ -3,6 +3,7 @@ if (Symbol.asyncIterator === undefined) ((Symbol as any).asyncIterator) = Symbol
 import { remote } from 'electron';
 import * as fs from 'fs-extra';
 import { join as pathJoin, parse as parsePath, ParsedPath } from 'path';
+import { RecordService } from './record';
 import { Util } from './utils';
 // tslint:disable-next-line:no-var-requires
 const jsontoxml = require('json2xml');
@@ -18,7 +19,7 @@ interface IImage {
   };
 }
 
-interface ILabeledImage extends IImage {
+export interface ILabeledImage extends IImage {
   objects: IObject[];
 }
 
@@ -31,6 +32,8 @@ interface IObject {
   };
   name: string;
 }
+
+const record = new RecordService();
 
 const imageCanvas = document.getElementById('image') as HTMLCanvasElement;
 const imageContext = imageCanvas.getContext('2d');
@@ -159,13 +162,14 @@ async function labelImage(image: IImage) {
 
 function createAnnotation(image: ILabeledImage) {
   let annonation = '<annotation>';
-  annonation += `<filename>${image.fileName}.jpg</filename>`;
+  annonation += `<fileName>${image.fileName}.jpg</fileName>`;
   annonation += jsontoxml({ size: image.size });
-  for (const object of image.objects) {
-    annonation += jsontoxml({ object });
+  for (const objects of image.objects) {
+    annonation += jsontoxml({ objects });
   }
   annonation += '</annotation>';
   return annonation;
 }
 
-main();
+document.getElementById('label-btn').addEventListener('click', () => main());
+document.getElementById('export-btn').addEventListener('click', () => record.main());
