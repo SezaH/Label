@@ -4,15 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Hello World!</title>
-  <link rel="stylesheet"
-        href="./style.css"></link>
 </head>
 
 <body>
-  <h1>LABEL</h1>
+  <canvas id="image"
+          style="position: absolute"></canvas>
+  <canvas id="boxes"
+          style="position: absolute"></canvas>
+  <canvas id="draw"
+          style="position: absolute"></canvas>
   <script>
+    // You can also require other files to run in this process
     require('./dist/renderer.js')
   </script>
-</body>
 
 </html>
