@@ -35,6 +35,8 @@ interface IObject {
 
 const record = new RecordService();
 
+const wrapper = document.getElementById('wrapper') as HTMLDivElement;
+
 const imageCanvas = document.getElementById('image') as HTMLCanvasElement;
 const imageContext = imageCanvas.getContext('2d');
 
@@ -94,8 +96,8 @@ async function labelImage(image: IImage) {
     const labeledImage = { ...image, objects: [] } as ILabeledImage;
 
     drawCanvas.onmousemove = event => {
-      const x = event.pageX - boxesCanvas.offsetLeft;
-      const y = event.pageY - boxesCanvas.offsetTop;
+      const x = event.pageX - wrapper.offsetLeft + wrapper.scrollLeft;
+      const y = event.pageY - wrapper.offsetTop + wrapper.scrollTop;
 
       drawContext.clearRect(0, 0, image.size.width, image.size.height);
       drawContext.beginPath();
@@ -113,8 +115,8 @@ async function labelImage(image: IImage) {
       if (isPlacing) {
         isPlacing = false;
         drawContext.clearRect(0, 0, image.size.width, image.size.height);
-        const endX = event.pageX - boxesCanvas.offsetLeft;
-        const endY = event.pageY - boxesCanvas.offsetTop;
+        const endX = event.pageX - wrapper.offsetLeft + wrapper.scrollLeft;
+        const endY = event.pageY - wrapper.offsetTop + wrapper.scrollTop;
         boxesContext.beginPath();
         boxesContext.strokeStyle = '#FF0000';
         boxesContext.strokeRect(startX, startY, endX - startX, endY - startY);
@@ -138,8 +140,8 @@ async function labelImage(image: IImage) {
         labeledImage.objects.push(object);
       } else {
         isPlacing = true;
-        startX = event.pageX - boxesCanvas.offsetLeft;
-        startY = event.pageY - boxesCanvas.offsetTop;
+        startX = event.pageX - wrapper.offsetLeft + wrapper.scrollLeft;
+        startY = event.pageY - wrapper.offsetTop + wrapper.scrollTop;
       }
     };
 

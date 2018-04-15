@@ -2,21 +2,28 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
   <title>Hello World!</title>
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-  <button id="label-btn">Label</button>
-  <button id="export-btn">Export</button>
-  <canvas id="image"
-          style="position: absolute"></canvas>
-  <canvas id="boxes"
-          style="position: absolute"></canvas>
-  <canvas id="draw"
-          style="position: absolute"></canvas>
+  <div class="container-fluid">
+    <div id="wrapper">
+      <canvas id="image"></canvas>
+      <canvas id="boxes"></canvas>
+      <canvas id="draw"></canvas>
+    </div>
+    <div class="sidebar">
+      <button id="label-btn" type="button" class="btn btn-primary">Label</button>
+      <button id="export-btn" type="button" class="btn">Export</button>
+    </div>
+  </div>
+
   <script>
-    // You can also require other files to run in this process
     require('./dist/renderer.js')
   </script>
 
