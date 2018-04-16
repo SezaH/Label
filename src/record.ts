@@ -15,7 +15,7 @@ interface ILabeledImageData extends ILabeledImage {
 export class RecordService {
 
   public async main() {
-    const dataDir = await Util.getDirectory();
+    const dataDir = await Util.getDirectoryName();
     const writer = await tfrecord.createWriter('data.record');
 
     for await (const labeledImage of this.labeledImageDataStream(dataDir)) {

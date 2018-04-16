@@ -2,6 +2,7 @@ if (Symbol.asyncIterator === undefined) ((Symbol as any).asyncIterator) = Symbol
 
 import { remote } from 'electron';
 import * as fs from 'fs-extra';
+import * as $ from 'jquery';
 import { join as pathJoin, parse as parsePath, ParsedPath } from 'path';
 import { RecordService } from './record';
 import { Util } from './utils';
@@ -33,6 +34,11 @@ interface IObject {
   name: string;
 }
 
+interface ILabel {
+  id: number;
+  name: string;
+}
+
 const record = new RecordService();
 
 const wrapper = document.getElementById('main') as HTMLDivElement;
@@ -46,10 +52,12 @@ const boxesContext = boxesCanvas.getContext('2d');
 const drawCanvas = document.getElementById('draw') as HTMLCanvasElement;
 const drawContext = drawCanvas.getContext('2d');
 
-async function main() {
-  const unlabeledDir = await Util.getDirectory();
+const labels = new Array<ILabel>();
+let imageDirectory = '';
 
-  for await (const image of imageStream(unlabeledDir)) {
+async function main() {
+  if (imageDirectory === '') return;
+  for await (const image of imageStream(imageDirectory)) {
     updateObjectList([]);
     const labeledImage = await labelImage(image);
     const annotation = await createAnnotation(labeledImage);
@@ -186,5 +194,43 @@ function createAnnotation(image: ILabeledImage) {
   return annonation;
 }
 
-document.getElementById('label-btn').addEventListener('click', () => main());
+document.getElementById('label-map-browse-btn').addEventListener('click', async () => {
+  const labelMapFileName = await Util.getFileName({ name: 'Label Map', extensions: ['pbtxt'] });
+  const labelMap = await fs.readFile(labelMapFileName, 'utf8');
+
+  let match: RegExpExecArray;
+  const labelRegex = /\bitem\s?{\s*id:\s?(\d+)\s*name:\s?'(\w+)'\s*}/gm;
+  labels.length = 0;
+  // tslint:disable-next-line:no-conditional-assignment
+  while ((match = labelRegex.exec(labelMap)) !== null) {
+    labels.push({ id: parseInt(match[1], 10), name: match[2] });
+  }
+
+  const labelList = document.getElementById('label-map-list') as HTMLUListElement;
+  const labelFileNameInput = document.getElementById('label-map-filename') as HTMLInputElement;
+
+  labelFileNameInput.value = labelMapFileName;
+
+  labelList.innerHTML = '';
+
+  for (const label of labels) {
+    const li = document.createElement('li');
+    li.innerHTML = `${label.id}: ${label.name}`;
+    li.classList.add('list-group-item');
+    labelList.appendChild(li);
+  }
+  checkEnableStartLabelBtn();
+});
+
+document.getElementById('image-directory-browse-btn').addEventListener('click', async () => {
+  imageDirectory = await Util.getDirectoryName();
+  $('#image-directory').val(imageDirectory);
+  checkEnableStartLabelBtn();
+});
+
+document.getElementById('start-label-btn').addEventListener('click', () => main());
 document.getElementById('export-btn').addEventListener('click', () => record.main());
+
+function checkEnableStartLabelBtn() {
+  $('#start-label-btn').prop('disabled', !(labels.length > 0 && imageDirectory !== ''));
+}
