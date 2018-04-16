@@ -12,14 +12,21 @@
 
 <body>
   <div class="container-fluid">
-    <div id="wrapper">
-      <canvas id="image"></canvas>
-      <canvas id="boxes"></canvas>
-      <canvas id="draw"></canvas>
-    </div>
-    <div class="sidebar">
+    <header>
       <button id="label-btn" type="button" class="btn btn-primary">Label</button>
       <button id="export-btn" type="button" class="btn">Export</button>
+    </header>
+    <div id="main">
+      <div id="wrapper">
+        <canvas id="image"></canvas>
+        <canvas id="boxes"></canvas>
+        <canvas id="draw"></canvas>
+      </div>
+      <div class="sidebar">
+        <ul id="object-list" class="list-group-flush">
+          <!-- <li class="list-group-item">Cup</li> -->
+        </ul>
+      </div>
     </div>
   </div>
 

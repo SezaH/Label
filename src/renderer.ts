@@ -50,6 +50,7 @@ async function main() {
   const unlabeledDir = await Util.getDirectory();
 
   for await (const image of imageStream(unlabeledDir)) {
+    updateObjectList([]);
     const labeledImage = await labelImage(image);
     const annotation = await createAnnotation(labeledImage);
 
@@ -138,6 +139,7 @@ async function labelImage(image: IImage) {
         object.name = 'cup';
 
         labeledImage.objects.push(object);
+        updateObjectList(labeledImage.objects);
       } else {
         isPlacing = true;
         startX = event.pageX - wrapper.offsetLeft + wrapper.scrollLeft;
@@ -160,6 +162,17 @@ async function labelImage(image: IImage) {
       }
     };
   });
+}
+
+const objectList = document.getElementById('object-list') as HTMLUListElement;
+function updateObjectList(objects: IObject[]) {
+  objectList.innerHTML = '';
+  for (const object of objects) {
+    const li = document.createElement('li');
+    li.innerText = object.name;
+    li.classList.add('list-group-item');
+    objectList.appendChild<HTMLLIElement>(li);
+  }
 }
 
 function createAnnotation(image: ILabeledImage) {
