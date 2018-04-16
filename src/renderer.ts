@@ -35,7 +35,7 @@ interface IObject {
 
 const record = new RecordService();
 
-const wrapper = document.getElementById('wrapper') as HTMLDivElement;
+const wrapper = document.getElementById('main') as HTMLDivElement;
 
 const imageCanvas = document.getElementById('image') as HTMLCanvasElement;
 const imageContext = imageCanvas.getContext('2d');

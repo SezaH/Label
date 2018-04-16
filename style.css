@@ -1,40 +1,43 @@
-.container-fluid {
+#container {
+    background: #999;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    display: flex;
-    flex-direction: column;
     margin: 0;
     padding: 0;
+    display: grid;
+    grid-gap: 1px;
+    grid-template-columns: auto 240px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "header header" "main sidebar"
+}
+
+.box {
+    background: #FEFEFE
 }
 
 #main {
-    display: flex;
-    flex: 1;
-}
-
-header {
-    padding: 3px;
-    border-bottom: 1px solid #333;
-}
-
-#wrapper {
-    position: relative;
+    grid-area: main;
     overflow: scroll;
-    flex: 1;
+    position: relative;
 }
 
-.sidebar {
-    width: 200px;
+#header {
+    grid-area: header;
+    padding: 5px;
 }
 
-.sidebar>.list-group-flush {
+#sidebar {
+    grid-area: sidebar;
+}
+
+#sidebar>.list-group-flush {
     padding: 0;
 }
 
-#wrapper canvas {
+#main>canvas {
     position: absolute;
     top: 0;
     left: 0;
