@@ -19,20 +19,39 @@
 <body>
   <div id="container">
 
-    <div id="header"
-         class="box">
-      <button type="button"
-              class="btn btn-primary"
-              data-toggle="modal"
-              data-target="#exampleModalCenter">
-        Label
+    <nav id="header"
+         class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand"
+         href="#">Labeler</a>
+      <button class="navbar-toggler"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
 
-      <button id="export-btn"
-              type="button"
-              class="btn">Export</button>
-    </div>
-
+      <div class="collapse navbar-collapse"
+           id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a data-toggle="modal"
+               data-target="#exampleModalCenter"
+               class="nav-link"
+               href="#">Start
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="export-btn"
+               class="nav-link"
+               href="#">Export</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <div id="main"
          class="box">
       <canvas id="image"></canvas>
