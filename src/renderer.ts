@@ -52,7 +52,8 @@ const boxesContext = boxesCanvas.getContext('2d');
 const drawCanvas = document.getElementById('draw') as HTMLCanvasElement;
 const drawContext = drawCanvas.getContext('2d');
 
-const labels = new Array<ILabel>();
+const labelSelect = document.getElementById('label-select') as HTMLSelectElement;
+const labels = new Map<number, string>();
 let imageDirectory = '';
 
 async function main() {
@@ -144,7 +145,7 @@ async function labelImage(image: IImage) {
         object.bndbox.xmin = Math.min(startX, endX);
         object.bndbox.ymax = Math.max(startY, endY);
         object.bndbox.ymin = Math.min(startY, endY);
-        object.name = 'cup';
+        object.name = labels.get(parseInt(labelSelect.value, 10));
 
         labeledImage.objects.push(object);
         updateObjectList(labeledImage.objects);
@@ -154,6 +155,12 @@ async function labelImage(image: IImage) {
         startY = event.pageY - wrapper.offsetTop + wrapper.scrollTop;
       }
     };
+
+    document.getElementById('clear-labels-btn').addEventListener('click', () => {
+      labeledImage.objects.length = 0;
+      updateObjectList(labeledImage.objects);
+      boxesContext.clearRect(0, 0, image.size.width, image.size.height);
+    });
 
     document.onkeypress = event => {
       console.log(event.key);
@@ -200,10 +207,10 @@ document.getElementById('label-map-browse-btn').addEventListener('click', async 
 
   let match: RegExpExecArray;
   const labelRegex = /\bitem\s?{\s*id:\s?(\d+)\s*name:\s?'(\w+)'\s*}/gm;
-  labels.length = 0;
+  labels.clear();
   // tslint:disable-next-line:no-conditional-assignment
   while ((match = labelRegex.exec(labelMap)) !== null) {
-    labels.push({ id: parseInt(match[1], 10), name: match[2] });
+    labels.set(parseInt(match[1], 10), match[2]);
   }
 
   const labelList = document.getElementById('label-map-list') as HTMLUListElement;
@@ -212,12 +219,18 @@ document.getElementById('label-map-browse-btn').addEventListener('click', async 
   labelFileNameInput.value = labelMapFileName;
 
   labelList.innerHTML = '';
+  labelSelect.innerHTML = '';
 
-  for (const label of labels) {
+  for (const [id, name] of labels) {
     const li = document.createElement('li');
-    li.innerHTML = `${label.id}: ${label.name}`;
+    li.innerHTML = `${id}: ${name}`;
     li.classList.add('list-group-item');
     labelList.appendChild(li);
+
+    const option = document.createElement('option');
+    option.innerHTML = `${id}: ${name}`;
+    option.value = id.toString();
+    labelSelect.appendChild(option);
   }
   checkEnableStartLabelBtn();
 });
@@ -232,5 +245,5 @@ document.getElementById('start-label-btn').addEventListener('click', () => main(
 document.getElementById('export-btn').addEventListener('click', () => record.main());
 
 function checkEnableStartLabelBtn() {
-  $('#start-label-btn').prop('disabled', !(labels.length > 0 && imageDirectory !== ''));
+  $('#start-label-btn').prop('disabled', !(labels.size > 0 && imageDirectory !== ''));
 }
