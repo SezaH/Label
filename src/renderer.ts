@@ -32,6 +32,7 @@ interface IObject {
     ymax: number;
   };
   name: string;
+  id: number;
 }
 
 interface ILabel {
@@ -132,13 +133,14 @@ async function labelImage(image: IImage) {
         boxesContext.strokeRect(startX, startY, endX - startX, endY - startY);
 
         const object: IObject = {
-          name: '',
           bndbox: {
             xmax: 0,
             xmin: 0,
             ymax: 0,
             ymin: 0,
           },
+          id: 0,
+          name: '',
         };
 
         object.bndbox.xmax = Math.max(startX, endX);
@@ -146,6 +148,7 @@ async function labelImage(image: IImage) {
         object.bndbox.ymax = Math.max(startY, endY);
         object.bndbox.ymin = Math.min(startY, endY);
         object.name = labels.get(parseInt(labelSelect.value, 10));
+        object.id = parseInt(labelSelect.value, 10);
 
         labeledImage.objects.push(object);
         updateObjectList(labeledImage.objects);

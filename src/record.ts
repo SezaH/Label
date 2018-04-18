@@ -59,7 +59,7 @@ export class RecordService {
     builder.setFloats('image/object/bbox/ymin', image.objects.map(o => o.bndbox.ymin / image.size.height));
     builder.setFloats('image/object/bbox/ymax', image.objects.map(o => o.bndbox.ymax / image.size.height));
     builder.setBinaries('image/object/class/text', image.objects.map(o => new Uint8Array(Buffer.from(o.name))));
-    builder.setIntegers('image/object/class/label', image.objects.map(o => 1));
+    builder.setIntegers('image/object/class/label', image.objects.map(o => o.id));
     return builder.releaseExample();
   }
 
