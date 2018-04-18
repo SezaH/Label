@@ -66,6 +66,7 @@ export class RecordService {
   private async readDemo() {
     const reader = await tfrecord.createReader('data.record');
     let example;
+    // tslint:disable-next-line:no-conditional-assignment
     while (example = await reader.readExample()) {
       console.log('%j', example.toJSON());
     }
