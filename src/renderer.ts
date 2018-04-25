@@ -94,12 +94,11 @@ async function labelImage(image: IImage) {
     imageCanvas.width = image.size.width;
     imageCanvas.height = image.size.height;
     imageContext.drawImage(image.bitmap, 0, 0);
-    boxesCanvas.width = image.size.width;
-    boxesCanvas.height = image.size.height;
-    boxesContext.clearRect(0, 0, image.size.width, image.size.height);
     drawCanvas.width = image.size.width;
     drawCanvas.height = image.size.height;
     drawContext.clearRect(0, 0, image.size.width, image.size.height);
+    boxesCanvas.width = image.size.width;
+    boxesCanvas.height = image.size.height;
 
     let isPlacing = false;
     let startX = 0;
@@ -112,6 +111,7 @@ async function labelImage(image: IImage) {
 
       drawContext.clearRect(0, 0, image.size.width, image.size.height);
       drawContext.beginPath();
+      drawContext.strokeStyle = '#fdab1c';
       if (isPlacing) drawContext.strokeRect(startX, startY, x - startX, y - startY);
       drawContext.strokeRect(x, 0, 0, image.size.height);
       drawContext.strokeRect(0, y, image.size.width, 0);
@@ -128,9 +128,6 @@ async function labelImage(image: IImage) {
         drawContext.clearRect(0, 0, image.size.width, image.size.height);
         const endX = event.pageX - wrapper.offsetLeft + wrapper.scrollLeft;
         const endY = event.pageY - wrapper.offsetTop + wrapper.scrollTop;
-        boxesContext.beginPath();
-        boxesContext.strokeStyle = '#FF0000';
-        boxesContext.strokeRect(startX, startY, endX - startX, endY - startY);
 
         const object: IObject = {
           bndbox: {
@@ -185,11 +182,28 @@ async function labelImage(image: IImage) {
 const objectList = document.getElementById('object-list') as HTMLUListElement;
 function updateObjectList(objects: IObject[]) {
   objectList.innerHTML = '';
-  for (const object of objects) {
+  boxesContext.clearRect(0, 0, boxesCanvas.width, boxesCanvas.height);
+
+  for (const [i, object] of objects.entries()) {
+    const btn = document.createElement('button');
+    btn.innerHTML = '&times;';
+    btn.classList.add('close');
+    btn.addEventListener('click', () => {
+      objects.splice(i, 1);
+      updateObjectList(objects);
+    });
+
     const li = document.createElement('li');
     li.innerText = object.name;
     li.classList.add('list-group-item');
-    objectList.appendChild<HTMLLIElement>(li);
+    li.appendChild(btn);
+
+    objectList.appendChild(li);
+
+    boxesContext.beginPath();
+    boxesContext.strokeStyle = '#FF0000';
+    boxesContext.strokeRect(object.bndbox.xmin, object.bndbox.ymin,
+      object.bndbox.xmax - object.bndbox.xmin, object.bndbox.ymax - object.bndbox.ymin);
   }
 }
 
