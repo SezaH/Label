@@ -16,15 +16,28 @@ export class RecordService {
 
   public async main() {
     const dataDir = await Util.getDirectoryName();
-    const writer = await tfrecord.createWriter('data.record');
+    const trainWriter = await tfrecord.createWriter(pathJoin(dataDir, 'train.record'));
+    const evalWriter = await tfrecord.createWriter(pathJoin(dataDir, 'eval.record'));
+    let trainCount = 0;
+    let evalCount = 0;
 
     for await (const labeledImage of this.labeledImageDataStream(dataDir)) {
       const example = await this.createExample(labeledImage);
-      await writer.writeExample(example);
+
+      if (Math.random() * 100 < 80) {
+        await trainWriter.writeExample(example);
+        trainCount++;
+      } else {
+        await evalWriter.writeExample(example);
+        evalCount++;
+      }
     }
 
-    await writer.close();
-    await this.readDemo();
+    await trainWriter.close();
+    await evalWriter.close();
+    console.log(`${trainCount + evalCount} images processed`);
+    console.log(`${trainCount} training images`);
+    console.log(`${evalCount} eval images`);
   }
 
 
@@ -61,15 +74,5 @@ export class RecordService {
     builder.setBinaries('image/object/class/text', image.objects.map(o => new Uint8Array(Buffer.from(o.name))));
     builder.setIntegers('image/object/class/label', image.objects.map(o => o.id));
     return builder.releaseExample();
-  }
-
-  private async readDemo() {
-    const reader = await tfrecord.createReader('data.record');
-    let example;
-    // tslint:disable-next-line:no-conditional-assignment
-    while (example = await reader.readExample()) {
-      console.log('%j', example.toJSON());
-    }
-    // The reader auto-closes after it reaches the end of the file.
   }
 }
