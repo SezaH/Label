@@ -6,7 +6,8 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>Hello World!</title>
+  <title>Label</title>
+  <base href="">
   <link rel="stylesheet"
         href="./node_modules/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet"
@@ -150,8 +151,9 @@
             crossorigin="anonymous"></script>
     <script src="./node_modules/bootstrap/dist/js/bootstrap.js"
             crossorigin="anonymous"></script>
-    <script>if (window.module) module = window.module;</script>
-    <script>require('./dist/renderer.js')</script>
+    <script>var exports = {};</script>
+    <script type="text/javascript"
+            src="./renderer.js"></script>
 </body>
 
 </html>

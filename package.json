@@ -3,12 +3,20 @@
   "version": "0.0.0",
   "description": "An image labeling tool",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
+    "build": "tsc && copyfiles -f src/index.html src/style.css package.json dist && cd dist && npm install --prod && cd ..",
+    "watch": "npm-watch",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && electron --serve --console ./dist/main.js",
     "electron": "electron --serve --console ./dist/main.js",
     "format": "tslint --fix --project ."
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,html,css"
+    }
   },
   "repository": "https://github.com/electron/electron-quick-start-typescript",
   "keywords": [
@@ -18,15 +26,17 @@
   "author": "Waste Busters",
   "license": "MIT",
   "devDependencies": {
+    "@types/fs-extra": "^5.0.1",
+    "@types/jquery": "^3.3.1",
     "@types/xml2js": "^0.4.2",
+    "copyfiles": "^2.0.0",
     "electron": "2.0.0",
     "electron-reload": "^1.2.2",
+    "npm-watch": "^0.3.0",
     "tslint": "^5.9.1",
     "typescript": "^2.8.1"
   },
   "dependencies": {
-    "@types/fs-extra": "^5.0.1",
-    "@types/jquery": "^3.3.1",
     "bootstrap": "^4.1.0",
     "fs-extra": "^5.0.0",
     "jquery": "^3.3.1",

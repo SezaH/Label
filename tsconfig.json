@@ -10,10 +10,11 @@
       "dom",
       "esnext.asynciterable",
     ],
-    "target": "es2016",
+    "target": "es6",
     "paths": {
       "*": [
-        "node_modules/*"
+        "node_modules/*",
+        "src/*"
       ]
     }
   },
