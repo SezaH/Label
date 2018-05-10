@@ -57,6 +57,8 @@ const labelSelect = document.getElementById('label-select') as HTMLSelectElement
 const labels = new Map<number, string>();
 let imageDirectory = '';
 
+const colors = ['#e41a1c', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#377eb8', '#f781bf'];
+
 async function main() {
   if (imageDirectory === '') return;
   for await (const image of imageStream(imageDirectory)) {
@@ -186,6 +188,8 @@ function updateObjectList(objects: IObject[]) {
 
   for (const [i, object] of objects.entries()) {
     const btn = document.createElement('button');
+    const color = colors[(object.id - 1) % colors.length];
+
     btn.innerHTML = '&times;';
     btn.classList.add('close');
     btn.addEventListener('click', () => {
@@ -195,13 +199,15 @@ function updateObjectList(objects: IObject[]) {
 
     const li = document.createElement('li');
     li.innerText = object.name;
+    li.style.backgroundColor = Util.hexToRGB(color, 0.3);
     li.classList.add('list-group-item');
     li.appendChild(btn);
 
     objectList.appendChild(li);
 
     boxesContext.beginPath();
-    boxesContext.strokeStyle = '#FF0000';
+    boxesContext.strokeStyle = color;
+    boxesContext.lineWidth = 2;
     boxesContext.strokeRect(object.bndbox.xmin, object.bndbox.ymin,
       object.bndbox.xmax - object.bndbox.xmin, object.bndbox.ymax - object.bndbox.ymin);
   }
@@ -260,6 +266,13 @@ document.getElementById('image-directory-browse-btn').addEventListener('click', 
 
 document.getElementById('start-label-btn').addEventListener('click', () => main());
 document.getElementById('export-btn').addEventListener('click', () => record.main());
+
+document.addEventListener('keydown', event => {
+  if (event.key >= '1' && event.key <= '9') {
+    const key = parseInt(event.key, 10);
+    if (labels.get(key) !== undefined) labelSelect.value = event.key;
+  }
+});
 
 function checkEnableStartLabelBtn() {
   $('#start-label-btn').prop('disabled', !(labels.size > 0 && imageDirectory !== ''));
