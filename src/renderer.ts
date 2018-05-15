@@ -264,16 +264,51 @@ document.getElementById('image-directory-browse-btn').addEventListener('click', 
   checkEnableStartLabelBtn();
 });
 
-document.getElementById('start-label-btn').addEventListener('click', () => main());
-document.getElementById('export-btn').addEventListener('click', () => record.main());
+document.getElementById('start-label-btn').addEventListener('click', () => snapshot());
+document.getElementById('export-btn').addEventListener('click', () => snapshot());
 
 document.addEventListener('keydown', event => {
   if (event.key >= '1' && event.key <= '9') {
     const key = parseInt(event.key, 10);
     if (labels.get(key) !== undefined) labelSelect.value = event.key;
+  } else if (event.key === 'q') {
+    snapshot();
   }
 });
 
 function checkEnableStartLabelBtn() {
   $('#start-label-btn').prop('disabled', !(labels.size > 0 && imageDirectory !== ''));
+}
+
+const video = document.getElementById('video') as HTMLVideoElement;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+    video.src = window.URL.createObjectURL(stream);
+    video.play();
+  });
+}
+
+async function snapshot() {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  canvas.width = video.width;
+  canvas.height = video.height;
+
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const name = ('00000000' + Math.floor(Math.random() * 100000000).toString()).slice(-8);
+
+  try {
+    const blob = await new Promise<Blob>(res => canvas.toBlob(b => res(b), 'image/jpeg', 0.95));
+    const image = await new Promise<ArrayBuffer>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve((e.target as any).result);
+      reader.onerror = e => reject((e.target as any).error);
+      reader.readAsArrayBuffer(blob);
+    });
+
+    await fs.outputFile(`./data2/${name}.jpg`, Buffer.from(image));
+  } catch (error) {
+    console.error(error);
+  }
 }
