@@ -9,6 +9,9 @@ import { Util } from './utils';
 // tslint:disable-next-line:no-var-requires
 const jsontoxml = require('json2xml');
 
+/**
+ * Describes an image load from the disk.
+ */
 interface IImage {
   bitmap: ImageBitmap;
   filePath: string;
@@ -24,6 +27,13 @@ export interface ILabeledImage extends IImage {
   objects: IObject[];
 }
 
+/**
+ * Describes a single object in the image.
+ * Uses the same format as the tfrecord so it will
+ * be easy to convert.
+ * The name and id should match what is found in the .pbtxt file
+ * being used.
+ */
 interface IObject {
   bndbox: {
     xmin: number;
@@ -35,32 +45,40 @@ interface IObject {
   id: number;
 }
 
-interface ILabel {
-  id: number;
-  name: string;
-}
-
 const record = new RecordService();
 
 const wrapper = document.getElementById('main') as HTMLDivElement;
 
+
+/** The canvas the images are drawn to when displayed to the user */
 const imageCanvas = document.getElementById('image') as HTMLCanvasElement;
 const imageContext = imageCanvas.getContext('2d');
 
+/** The canvas where the bounding boxes are drawn to after the object is labeled. */
 const boxesCanvas = document.getElementById('boxes') as HTMLCanvasElement;
 const boxesContext = boxesCanvas.getContext('2d');
 
+/** The canvas used to draw the bounding boxes and guides as the user is creating a new label. */
 const drawCanvas = document.getElementById('draw') as HTMLCanvasElement;
 const drawContext = drawCanvas.getContext('2d');
 
+/** The select input for choosing the active class */
 const labelSelect = document.getElementById('label-select') as HTMLSelectElement;
+
+/** Maps the class id to the class name */
 const labels = new Map<number, string>();
+
+
 let imageDirectory = '';
 
+/** The colors used to differentiate between classes */
 const colors = ['#e41a1c', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#377eb8', '#f781bf'];
 
+/** Start the labeling process */
 async function main() {
   if (imageDirectory === '') return;
+
+  // For each image in the image directory, label it and move it the output location.
   for await (const image of imageStream(imageDirectory)) {
     updateObjectList([]);
     const labeledImage = await labelImage(image);
@@ -75,6 +93,11 @@ async function main() {
   imageContext.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
 }
 
+/**
+ * Reads in each file from the given directory.
+ * Skips over files that are not jpegs.
+ * For every jpeg construct an IImage object and return it.
+ */
 async function* imageStream(directory: string): AsyncIterableIterator<IImage> {
   const fileNames = await fs.readdir(directory);
   for (const fileName of fileNames) {
@@ -91,8 +114,14 @@ async function* imageStream(directory: string): AsyncIterableIterator<IImage> {
   }
 }
 
+/**
+ * Waits for the user to label a new object.
+ * Returns the labeled image object.
+ */
 async function labelImage(image: IImage) {
   return new Promise<ILabeledImage>(resolve => {
+
+    // Clear the canvases
     imageCanvas.width = image.size.width;
     imageCanvas.height = image.size.height;
     imageContext.drawImage(image.bitmap, 0, 0);
@@ -107,6 +136,7 @@ async function labelImage(image: IImage) {
     let startY = 0;
     const labeledImage = { ...image, objects: [] } as ILabeledImage;
 
+    // On mouse move draw the box and guides at the mouse locaiton
     drawCanvas.onmousemove = event => {
       const x = event.pageX - wrapper.offsetLeft + wrapper.scrollLeft;
       const y = event.pageY - wrapper.offsetTop + wrapper.scrollTop;
@@ -119,11 +149,13 @@ async function labelImage(image: IImage) {
       drawContext.strokeRect(0, y, image.size.width, 0);
     };
 
+    // Right clicks cancel the placement
     drawCanvas.oncontextmenu = event => {
       event.preventDefault();
       isPlacing = false;
     };
 
+    // Clicking places the corners of the box
     drawCanvas.onclick = event => {
       if (isPlacing) {
         isPlacing = false;
@@ -164,6 +196,8 @@ async function labelImage(image: IImage) {
       boxesContext.clearRect(0, 0, image.size.width, image.size.height);
     });
 
+    // Escape cancels the placement
+    // Enter moves to the next image
     document.onkeypress = event => {
       console.log(event.key);
       switch (event.key) {
@@ -182,6 +216,8 @@ async function labelImage(image: IImage) {
 }
 
 const objectList = document.getElementById('object-list') as HTMLUListElement;
+
+/** Populates the list of labeled objects on the right of the image */
 function updateObjectList(objects: IObject[]) {
   objectList.innerHTML = '';
   boxesContext.clearRect(0, 0, boxesCanvas.width, boxesCanvas.height);
@@ -213,6 +249,10 @@ function updateObjectList(objects: IObject[]) {
   }
 }
 
+/**
+ * Creates the annotation file contents.
+ * TUses the pascal voc xml format.
+ */
 function createAnnotation(image: ILabeledImage) {
   let annonation = '<annotation>';
   annonation += `<fileName>${image.fileName}.jpg</fileName>`;
@@ -224,6 +264,10 @@ function createAnnotation(image: ILabeledImage) {
   return annonation;
 }
 
+/**
+ * Reads and parses the label map file.
+ * Populates the label map
+ */
 document.getElementById('label-map-browse-btn').addEventListener('click', async () => {
   const labelMapFileName = await Util.getFileName({ name: 'Label Map', extensions: ['pbtxt'] });
   const labelMap = await fs.readFile(labelMapFileName, 'utf8');
@@ -244,6 +288,7 @@ document.getElementById('label-map-browse-btn').addEventListener('click', async 
   labelList.innerHTML = '';
   labelSelect.innerHTML = '';
 
+  // Populate the list in the modal.
   for (const [id, name] of labels) {
     const li = document.createElement('li');
     li.innerHTML = `${id}: ${name}`;
@@ -264,9 +309,10 @@ document.getElementById('image-directory-browse-btn').addEventListener('click', 
   checkEnableStartLabelBtn();
 });
 
-document.getElementById('start-label-btn').addEventListener('click', () => snapshot());
-document.getElementById('export-btn').addEventListener('click', () => snapshot());
+document.getElementById('start-label-btn').addEventListener('click', () => main());
+document.getElementById('export-btn').addEventListener('click', () => record.main());
 
+/** Hotkeys for switching between classes. */
 document.addEventListener('keydown', event => {
   if (event.key >= '1' && event.key <= '9') {
     const key = parseInt(event.key, 10);

@@ -22,6 +22,7 @@ npm start
 - [Node](https://nodejs.org/en/about/): a JavaScript runtime built on Chrome's V8 JavaScript engine
 - [Electron](https://electron.atom.io/): a framework built on Node and Chromium for creating cross-platform native applications
 - [TypeScript](https://www.typescriptlang.org/): a typed superset of JavaScript that compiles to plain JavaScript
+- [Tfrecord](https://github.com/pwnall/tfrecord): a small JS library for creating TF record files
 
 # Contributing
 
@@ -71,3 +72,23 @@ It is suggested to add this to the pre-commit hook.
      - Request a reviewer
 
 Please try to follow this [Style Guide](https://github.com/agis/git-style-guide#table-of-contents) when using Git.
+
+# Structure
+
+### `maint.ts`
+
+The entry point of the main Electron thread. See [here] for more information.
+
+### `renderer.ts`
+
+- Handles all the GUI interactions.
+- Binds actions to buttons
+- Handles labeling images
+- Loads and displays images
+- Saves the labeled images to disk
+
+### `index.html`
+
+### `records.ts`
+
+- Handles converting the labeled data into the correct format to be trained with

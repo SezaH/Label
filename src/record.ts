@@ -12,8 +12,18 @@ interface ILabeledImageData extends ILabeledImage {
   data: Uint8Array;
 }
 
+
+/**
+ * This class is responsible for taking labeled images and annotations and converting
+ * the information into tfrecord files to be used during training.
+ */
 export class RecordService {
 
+  /**
+   * Asks the user to open the data directory.
+   * The generates two tfrecord files from the data in the directory.
+   * A training and evaluation record are created.
+   */
   public async main() {
     const dataDir = await Util.getDirectoryName();
     const trainWriter = await tfrecord.createWriter(pathJoin(dataDir, 'train.record'));
@@ -41,6 +51,10 @@ export class RecordService {
   }
 
 
+  /**
+   * Generates a stream of labeled images load from the given directory.
+   * @param directory The directory to the annotations and images from
+   */
   private async *labeledImageDataStream(directory: string): AsyncIterableIterator<ILabeledImageData> {
     const fileNames = await fs.readdir(pathJoin(directory, 'annotations'));
     for (const fileName of fileNames) {
@@ -59,6 +73,10 @@ export class RecordService {
     }
   }
 
+  /**
+   * Converts the given image to the tfrecord format and loads the needed information.
+   * @param image The image to convert to the tfrecord format.
+   */
   private async createExample(image: ILabeledImageData) {
     const builder = tfrecord.createBuilder();
     builder.setInteger('image/height', image.size.height);
