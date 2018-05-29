@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Label</title>
+  <base href="">
+  <link rel="stylesheet"
+        href="./node_modules/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet"
+        href="./style.css">
+  <!-- <script src="./node_modules/jquery/dist/jquery.slim.min.js"></script> -->
+  <!-- <script src="./node_modules/popper.js/dist/popper.min.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script> -->
+</head>
+
+<body>
+  <div id="container">
+    <nav id="header"
+         class="navbar navbar-expand navbar-light bg-light">
+      <span class="navbar-brand mb-0 h1">Labeler</span>
+      <button class="navbar-toggler"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse"
+           id="navbarSupportedContent">
+        <div class="input-group">
+          <select class="custom-select"
+                  id="inputGroupSelect04">
+            <option selected>Select Interval</option>
+            <option value="3">3s</option>
+            <option value="5">5s</option>
+            <option value="10">10s</option>
+            <option value="20">20s</option>
+            <option value="30">30s</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary"
+                    type="button">Button</button>
+          </div>
+        </div>
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a data-toggle="modal"
+               data-target="#exampleModalCenter"
+               class="nav-link"
+               href="#">Start
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="main"
+         class="box">
+      <video autoplay
+             id="video"></video>
+    </div>
+  </div>
+
+  <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+  <script src="./node_modules/jquery/dist/jquery.slim.min.js"
+          crossorigin="anonymous"></script>
+  <script src="./node_modules/popper.js/dist/popper.min.js"
+          crossorigin="anonymous"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.js"
+          crossorigin="anonymous"></script>
+  <script>var exports = {};</script>
+  <script type="text/javascript"
+          src="./capture.js"></script>
+</body>
+
+</html>

@@ -36,11 +36,18 @@
       <div class="collapse navbar-collapse"
            id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
+          <li class="nav-item">
+            <a id="capture-btn"
+               class="nav-link"
+               href="#">Capture
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
             <a data-toggle="modal"
                data-target="#exampleModalCenter"
                class="nav-link"
-               href="#">Start
+               href="#">Label
               <span class="sr-only">(current)</span>
             </a>
           </li>
@@ -60,10 +67,6 @@
     <div id="main"
          class="box">
       <canvas id="image"></canvas>
-      <video width="1920"
-             height="1080"
-             autoplay
-             id="video"></video>
       <canvas id="boxes"></canvas>
       <canvas id="draw"></canvas>
     </div>

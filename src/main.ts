@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, Menu, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -26,8 +26,11 @@ function startApp() {
     }));
 
     // Open the DevTools.
-    if (debug) mainWindow.webContents.openDevTools();
-
+    if (debug) {
+      mainWindow.webContents.openDevTools();
+    } else {
+      Menu.setApplicationMenu(null);
+    }
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store windows
