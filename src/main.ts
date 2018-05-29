@@ -17,6 +17,7 @@ function startApp() {
     mainWindow = new BrowserWindow();
     mainWindow.setBounds(displays[displays.length - 1].bounds);
     mainWindow.maximize();
+    Menu.setApplicationMenu(null);
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
@@ -26,11 +27,8 @@ function startApp() {
     }));
 
     // Open the DevTools.
-    if (debug) {
-      mainWindow.webContents.openDevTools();
-    } else {
-      Menu.setApplicationMenu(null);
-    }
+    if (debug) mainWindow.webContents.openDevTools();
+
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {
       // Dereference the window object, usually you would store windows

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "An image labeling tool",
   "scripts": {
-    "build": "tsc && copyfiles -f src/index.html src/style.css package.json dist && cd dist && npm install --prod && cd ..",
+    "build": "tsc && copyfiles -f src/*.{html,css} package.json dist && cd dist && npm install --prod && cd ..",
     "watch": "npm-watch",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && electron --serve --console ./dist/main.js",
@@ -42,6 +42,7 @@
     "jquery": "^3.3.1",
     "json2xml": "^0.1.3",
     "popper.js": "^1.14.3",
+    "rxjs": "^5.4.2",
     "tfrecord": "^0.2.0",
     "xml2js": "^0.4.19"
   }
