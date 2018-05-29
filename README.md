@@ -77,7 +77,7 @@ Please try to follow this [Style Guide](https://github.com/agis/git-style-guide#
 
 ### `maint.ts`
 
-The entry point of the main Electron thread. See [here] for more information.
+The entry point of the main Electron thread. See [here](https://github.com/electron/electron/blob/master/docs/tutorial/first-app.md#electron-development-in-a-nutshell) for more information.
 
 ### `renderer.ts`
 
@@ -89,6 +89,21 @@ The entry point of the main Electron thread. See [here] for more information.
 
 ### `index.html`
 
+- Defines the GUI (What the user sees)
+
+### `style.css`
+
+- Applies styling to the user interface
+
 ### `records.ts`
 
 - Handles converting the labeled data into the correct format to be trained with
+
+### `capture.ts`
+
+- Handles capturing the images when collecting new data
+- Allows for automatic or manual collection
+
+### `capture.html`
+
+- The GUI for capturing images
