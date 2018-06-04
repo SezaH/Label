@@ -1,6 +1,6 @@
 {
   "name": "label",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "An image labeling tool",
   "scripts": {
     "build": "tsc && copyfiles -f src/*.{html,css} package.json dist && cd dist && npm install --prod && cd ..",
@@ -8,7 +8,9 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "npm run build && electron --serve --console ./dist/main.js",
     "electron": "electron --serve --console ./dist/main.js",
-    "format": "tslint --fix --project ."
+    "format": "tslint --fix --project .",
+    "pack": "npm run build && electron-builder --project ./dist --dir",
+    "dist": "npm run build && electron-builder --project ./dist"
   },
   "watch": {
     "build": {
@@ -17,6 +19,16 @@
       ],
       "extensions": "ts,html,css"
     }
+  },
+  "build": {
+    "directories": {
+      "output": "./build/"
+    },
+    "files": [
+      "**/*",
+      "./data/"
+    ],
+    "asar": false
   },
   "repository": "https://github.com/electron/electron-quick-start-typescript",
   "keywords": [
@@ -31,6 +43,7 @@
     "@types/xml2js": "^0.4.2",
     "copyfiles": "^2.0.0",
     "electron": "2.0.0",
+    "electron-builder": "^20.15.1",
     "electron-reload": "^1.2.2",
     "npm-watch": "^0.3.0",
     "tslint": "^5.9.1",
