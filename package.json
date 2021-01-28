@@ -42,7 +42,7 @@
     "@types/jquery": "^3.3.1",
     "@types/xml2js": "^0.4.2",
     "copyfiles": "^2.0.0",
-    "electron": "2.0.0",
+    "electron": "9.4.0",
     "electron-builder": "^20.15.1",
     "electron-reload": "^1.2.2",
     "npm-watch": "^0.3.0",
